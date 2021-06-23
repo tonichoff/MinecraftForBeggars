@@ -20,8 +20,9 @@ public class WorldGenerator : MonoBehaviour
     {
         for (int x = 0; x < WorldSize; ++x) {
             for (int z = 0; z < WorldSize; ++z) {
+                CreateVoxel(BedrockVoxel, new Vector3(x, 0, z));
                 var height = Random.Range(1, WorldHeight);
-                for (int y = 0; y < height; ++y) {
+                for (int y = 1; y < height; ++y) {
                     CreateVoxel(GrassVoxel, new Vector3(x, y, z));
 				}
 			}

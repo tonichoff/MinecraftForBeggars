@@ -5,11 +5,11 @@ public class PlayerController : MonoBehaviour
     private const float jumpPower = 300;
     private const float speed = 10;
 
-    private Rigidbody rigidbody;
+    private Rigidbody body;
 
     private void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        body = GetComponent<Rigidbody>();
 
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -44,21 +44,25 @@ public class PlayerController : MonoBehaviour
         var x = Input.GetAxis("Horizontal");
         var z = Input.GetAxis("Vertical");
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            rigidbody.AddForce(Vector3.up * jumpPower);
+        if (Input.GetKeyDown(KeyCode.Space) && body.detectCollisions) {
+            body.AddForce(Vector3.up * jumpPower);
         }
 
-        var transformVector = rigidbody.transform.localToWorldMatrix.MultiplyVector(new Vector3(x, 0, z));
+        var transformVector = body.transform.localToWorldMatrix.MultiplyVector(new Vector3(x, 0, z));
         var deltaPosition = transformVector * speed * Time.deltaTime;
-        rigidbody.transform.position += deltaPosition;
+        body.transform.position += deltaPosition;
     }
 
     private void UpdateDestroyingVoxel()
 	{
         var ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0));
         if (Physics.Raycast(ray, out var hit)) {
-            if (hit.collider.name == "Cube") {
-                Destroy(hit.collider.gameObject);
+            switch (hit.collider.name) {
+                case "GrassCube":
+                case "StoneCube":
+                case "WaterCube":
+                    Destroy(hit.collider.gameObject);
+                    break;
             }
         }
     }

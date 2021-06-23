@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5376814498219866070}
   m_Layer: 0
-  m_Name: Voxel
+  m_Name: GrassVoxel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 1206086592964189429}
   - component: {fileID: 1289810668356481329}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: GrassCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
