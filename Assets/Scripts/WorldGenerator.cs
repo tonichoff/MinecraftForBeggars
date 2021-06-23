@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-
 using UnityEngine;
 
-public class WorldGeneator : MonoBehaviour
+public class WorldGenerator : MonoBehaviour
 {
     public int WorldSize;
     public int WorldHeight;
@@ -13,7 +10,7 @@ public class WorldGeneator : MonoBehaviour
     public GameObject StoneVoxel;
     public GameObject WaterVoxel;
 
-    private void CreateVoxel(GameObject voxel, Vector3 position)
+    public void CreateVoxel(GameObject voxel, Vector3 position)
 	{
         Instantiate(voxel, position, Quaternion.identity);
 	}
