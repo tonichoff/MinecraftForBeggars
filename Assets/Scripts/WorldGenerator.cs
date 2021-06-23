@@ -1,5 +1,13 @@
 using UnityEngine;
 
+public enum VoxelType
+{
+    Grass,
+    Stone,
+    Water,
+    Bedrock,
+}
+
 public class WorldGenerator : MonoBehaviour
 {
     public int WorldSize;

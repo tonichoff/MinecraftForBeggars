@@ -6,10 +6,15 @@ public class PlayerController : MonoBehaviour
     private const float speed = 10;
 
     private Rigidbody body;
+    private VoxelType selectedVoxel;
+    private UIController uiController;
 
     private void Start()
     {
         body = GetComponent<Rigidbody>();
+        selectedVoxel = VoxelType.Grass;
+        uiController = GameObject.Find("HUD").GetComponent<UIController>();
+        uiController.ChangeVoxelIco(selectedVoxel);
 
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -24,6 +29,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(1)) {
             UpdateCreatingVoxel();
         }
+        UpdateSelectedVoxel();
     }
 
     private void UpdateLook()
@@ -72,9 +78,33 @@ public class PlayerController : MonoBehaviour
         var ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0));
         if (Physics.Raycast(ray, out var hit)) {
             if (hit.collider.name.Contains("Cube")) {
-                var wg = GameObject.Find("WorldGenerator").GetComponent<WorldGenerator>();
-                wg.CreateVoxel(wg.GrassVoxel, hit.transform.position + hit.normal);
+                var worldGenerator = GameObject.Find("WorldGenerator").GetComponent<WorldGenerator>();
+                GameObject voxel = selectedVoxel switch {
+					VoxelType.Grass => worldGenerator.GrassVoxel,
+					VoxelType.Stone => worldGenerator.StoneVoxel,
+					VoxelType.Water => worldGenerator.WaterVoxel,
+					_ => worldGenerator.GrassVoxel,
+				};
+				worldGenerator.CreateVoxel(voxel, hit.transform.position + hit.normal);
             }
         }
+    }
+
+    private void UpdateSelectedVoxel()
+	{
+        var selectedVoxel = this.selectedVoxel;
+        if (Input.GetKeyDown(KeyCode.Alpha1)) {
+            selectedVoxel = VoxelType.Grass;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2)) {
+            selectedVoxel = VoxelType.Stone;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3)) {
+            selectedVoxel = VoxelType.Water;
+        }
+        if (selectedVoxel != this.selectedVoxel) {
+            this.selectedVoxel = selectedVoxel;
+            uiController.ChangeVoxelIco(selectedVoxel);
+		}
     }
 }
