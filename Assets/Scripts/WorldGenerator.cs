@@ -96,17 +96,30 @@ public class WorldGenerator : MonoBehaviour
         for (int x = 0; x < WorldSize; ++x) {
             for (int z = 0; z < WorldSize; ++z) {
                 CreateVoxel(BedrockVoxel, new Vector3(x, 0, z));
+                ++voxelsInFrameCounter;
                 var height = map[x, z];
-                CreateVoxel(WaterVoxel, new Vector3(x, 1, z));
-                CreateVoxel(WaterVoxel, new Vector3(x, 2, z));
-                for (int y = 3; y < height; ++y) {
-                    CreateVoxel(GrassVoxel, new Vector3(x, y, z));
-                    ++voxelsInFrameCounter;
+                if (height <= 3) {
+                    var firstVoxel = Random.Range(0, 1) == 0 ? BedrockVoxel : StoneVoxel;
+                    CreateVoxel(firstVoxel, new Vector3(x, 1, z));
+                    CreateVoxel(WaterVoxel, new Vector3(x, 2, z));
+                    CreateVoxel(WaterVoxel, new Vector3(x, 3, z));
+                    voxelsInFrameCounter += 3;
                     if (voxelsInFrameCounter >= voxelsPerFrame) {
                         voxelsInFrameCounter = 0;
                         yield return new WaitForEndOfFrame();
-					}
+                    }
+                } else {
+                    for (int y = 1; y < height; ++y) {
+                        CreateVoxel(StoneVoxel, new Vector3(x, y, z));
+                        ++voxelsInFrameCounter;
+                        if (voxelsInFrameCounter >= voxelsPerFrame) {
+                            voxelsInFrameCounter = 0;
+                            yield return new WaitForEndOfFrame();
+                        }
+                    }
                 }
+                CreateVoxel(GrassVoxel, new Vector3(x, height, z));
+                ++voxelsInFrameCounter;
             }
         }
     }
