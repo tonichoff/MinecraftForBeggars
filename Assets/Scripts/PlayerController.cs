@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private Camera playerCamera;
     private VoxelType selectedVoxel;
     private UIController uiController;
+    private WorldGenerator worldGenerator;
 
     private void Start()
     {
@@ -20,6 +21,7 @@ public class PlayerController : MonoBehaviour
         selectedVoxel = VoxelType.Grass;
         uiController = GameObject.Find("HUD").GetComponent<UIController>();
         uiController.ChangeVoxelIco(selectedVoxel);
+        worldGenerator = GameObject.Find("WorldGenerator").GetComponent<WorldGenerator>();
 
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -76,13 +78,7 @@ public class PlayerController : MonoBehaviour
 	{
         var ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0));
         if (Physics.Raycast(ray, out var hit)) {
-            switch (hit.collider.name) {
-                case "GrassCube":
-                case "StoneCube":
-                case "WaterCube":
-                    Destroy(hit.collider.gameObject);
-                    break;
-            }
+            worldGenerator.DestroyVoxel(hit.collider.gameObject);
         }
     }
 
@@ -91,14 +87,13 @@ public class PlayerController : MonoBehaviour
         var ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0));
         if (Physics.Raycast(ray, out var hit)) {
             if (hit.collider.name.Contains("Cube")) {
-                var worldGenerator = GameObject.Find("WorldGenerator").GetComponent<WorldGenerator>();
                 GameObject voxel = selectedVoxel switch {
 					VoxelType.Grass => worldGenerator.GrassVoxel,
 					VoxelType.Stone => worldGenerator.StoneVoxel,
 					VoxelType.Water => worldGenerator.WaterVoxel,
 					_ => worldGenerator.GrassVoxel,
 				};
-				worldGenerator.CreateVoxel(voxel, hit.transform.position + hit.normal);
+				worldGenerator.CreateVoxel(voxel, hit.transform.position + hit.normal, checkWater: true);
             }
         }
     }

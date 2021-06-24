@@ -14,6 +14,7 @@ public class CreeperController : MonoBehaviour
 
     private GameObject player;
     private Renderer creeperRenderer;
+    private WorldGenerator worldGenerator;
 
     private Vector3 moveDirection = Vector3.zero;
     private float distanceToPlayer;
@@ -25,6 +26,7 @@ public class CreeperController : MonoBehaviour
     {
         player = GameObject.Find("Player").transform.Find("Body").gameObject;
         creeperRenderer = GetComponent<Renderer>();
+        worldGenerator = GameObject.Find("WorldGenerator").GetComponent<WorldGenerator>();
     }
 
 
@@ -95,13 +97,7 @@ public class CreeperController : MonoBehaviour
         var center = gameObject.transform.position;
         var hitColliders = Physics.OverlapSphere(center, explosionRadius);
         foreach (var collide in hitColliders) {
-            switch (collide.name) {
-                case "GrassCube":
-                case "StoneCube":
-                case "WaterCube":
-                    Destroy(collide.gameObject);
-                    break;
-            }
+            worldGenerator.DestroyVoxel(collide.gameObject);
         }
         Destroy(gameObject);
     }

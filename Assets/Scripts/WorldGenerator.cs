@@ -22,14 +22,32 @@ public class WorldGenerator : MonoBehaviour
     public GameObject StoneVoxel;
     public GameObject WaterVoxel;
 
-    public void CreateVoxel(GameObject voxel, Vector3 position)
+    private WaterManager waterManager;
+
+    public void CreateVoxel(GameObject voxel, Vector3 position, bool checkWater = false)
 	{
         Instantiate(voxel, position, Quaternion.identity);
+        if (checkWater) {
+            CheckWater(position);
+        }
+	}
+
+    public void DestroyVoxel(GameObject voxel)
+	{
+        switch (voxel.name) {
+            case "GrassCube":
+            case "StoneCube":
+            case "WaterCube":
+                Destroy(voxel);
+                CheckWater(voxel.transform.position);
+                break;
+        }
 	}
 
     // Start is called before the first frame update
     private void Start()
     {
+        waterManager = GameObject.Find("WaterManager").GetComponent<WaterManager>();
         StartCoroutine(GenerateWorld());
     }
 
@@ -91,9 +109,18 @@ public class WorldGenerator : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     private void Update()
     {
         
+    }
+
+    private void CheckWater(Vector3 center)
+    {
+        var waterCandidates = Physics.OverlapSphere(center, 2);
+        foreach (var candidate in waterCandidates) {
+            if (candidate.name == "WaterCube") {
+                StartCoroutine(waterManager.CheckCoroutine(candidate.gameObject));
+            }
+        }
     }
 }
