@@ -2,16 +2,23 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private const float jumpPower = 300;
-    private const float speed = 10;
+    private const float jumpSpeed = 8;
+    private const float moveSpeed = 6;
+    private const float gravity = 20;
+    private const float sensitvity = 4;
+
+    private Vector3 moveDirection = Vector3.zero;
+    private float yCameraRotation;
 
     private Rigidbody body;
+    private Camera camera;
     private VoxelType selectedVoxel;
     private UIController uiController;
 
     private void Start()
     {
         body = GetComponent<Rigidbody>();
+        camera = Camera.main;
         selectedVoxel = VoxelType.Grass;
         uiController = GameObject.Find("HUD").GetComponent<UIController>();
         uiController.ChangeVoxelIco(selectedVoxel);
@@ -34,29 +41,37 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateLook()
 	{
-        var x = Input.GetAxis("Mouse X");
-        var y = Input.GetAxis("Mouse Y");
+        float y = -Input.GetAxis("Mouse Y") * sensitvity;
+        float x = Input.GetAxis("Mouse X") * sensitvity;
 
-        transform.eulerAngles += new Vector3(0, x, 0);
+        yCameraRotation += y;
+        yCameraRotation = Mathf.Clamp(yCameraRotation, -80, 80);
 
-        var head = transform.Find("Head");
-        if (head != null) {
-            head.transform.eulerAngles += new Vector3(-y, 0, 0);
+        if (x != 0) {
+            transform.eulerAngles += new Vector3(0, x, 0);
+        }
+        if (y != 0) {
+            camera.transform.eulerAngles = new Vector3(yCameraRotation, transform.eulerAngles.y, 0);
         }
     }
 
     private void UpdatePosition()
 	{
-        var x = Input.GetAxis("Horizontal");
-        var z = Input.GetAxis("Vertical");
+        var characterController = GetComponent<CharacterController>();
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            body.AddForce(Vector3.up * jumpPower);
+        if (characterController.isGrounded) {
+            float x = Input.GetAxis("Horizontal");
+            float z = Input.GetAxis("Vertical");
+            moveDirection = transform.TransformDirection(new Vector3(x, 0, z));
+            moveDirection *= moveSpeed;
+
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                moveDirection.y = jumpSpeed;
+			}
         }
 
-        var transformVector = body.transform.localToWorldMatrix.MultiplyVector(new Vector3(x, 0, z));
-        var deltaPosition = transformVector * speed * Time.deltaTime;
-        body.MovePosition(body.transform.position + deltaPosition);
+        moveDirection.y -= gravity * Time.deltaTime;
+        characterController.Move(moveDirection * Time.deltaTime);
     }
 
     private void UpdateDestroyingVoxel()
