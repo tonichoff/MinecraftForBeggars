@@ -1,3 +1,5 @@
+using System.Collections;
+
 using UnityEngine;
 
 public class CreeperController : MonoBehaviour
@@ -6,16 +8,23 @@ public class CreeperController : MonoBehaviour
     private const float moveSpeed = 4;
     private const float gravity = 20;
 
+    private const float timeToExplode = 3;
+    private const float distanceToExplode = 3;
+    private const float explosionRadius = 5;
+
     private GameObject player;
-    private Rigidbody body;
+    private Renderer creeperRenderer;
 
     private Vector3 moveDirection = Vector3.zero;
     private float distanceToPlayer;
+    private float timer;
+    private bool waitToExplode;
+    private IEnumerator blinkingCoroutine;
 
     private void Start()
     {
         player = GameObject.Find("Player").transform.Find("Body").gameObject;
-        body = GetComponent<Rigidbody>();
+        creeperRenderer = GetComponent<Renderer>();
     }
 
 
@@ -23,6 +32,7 @@ public class CreeperController : MonoBehaviour
     {
         UpdateDistanceToPlayer();
         UpdatePosition();
+        UpdateExploding();
     }
 
     private void UpdateDistanceToPlayer()
@@ -54,8 +64,55 @@ public class CreeperController : MonoBehaviour
         characterController.Move(moveDirection * Time.deltaTime);
     }
 
+    private void UpdateExploding()
+	{
+        if (distanceToPlayer <= distanceToExplode) {
+            if (!waitToExplode) {
+                timer = 0;
+                waitToExplode = true;
+                blinkingCoroutine = Blinking();
+                StartCoroutine(blinkingCoroutine);
+            } else {
+                timer += Time.deltaTime;
+                if (timer >= timeToExplode) {
+                    Explode();
+				}
+			}
+        } else {
+            if (waitToExplode) {
+                timer = 0;
+                waitToExplode = false;
+                if (blinkingCoroutine != null) {
+                    StopCoroutine(blinkingCoroutine);
+                    creeperRenderer.material.color = Color.white;
+                }
+            }
+		}
+    }
+
     private void Explode()
 	{
+        var center = gameObject.transform.position;
+        var hitColliders = Physics.OverlapSphere(center, explosionRadius);
+        foreach (var collide in hitColliders) {
+            switch (collide.name) {
+                case "GrassCube":
+                case "StoneCube":
+                case "WaterCube":
+                    Destroy(collide.gameObject);
+                    break;
+            }
+        }
+        Destroy(gameObject);
+    }
 
-	}
+    private IEnumerator Blinking()
+	{
+        while (true) {
+            creeperRenderer.material.color = Color.red;
+            yield return new WaitForSeconds(0.2f);
+            creeperRenderer.material.color = Color.white;
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
 }

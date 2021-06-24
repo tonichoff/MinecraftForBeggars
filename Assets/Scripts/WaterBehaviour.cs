@@ -22,7 +22,7 @@ public class WaterBehaviour : MonoBehaviour
     {
         var center = gameObject.transform.position;
         float radius = 2f;
-        Collider[] hitColliders = Physics.OverlapSphere(center, radius);
+        var hitColliders = Physics.OverlapSphere(center, radius);
 
         var positionUnder = center + new Vector3(0, -1, 0);
         var positionNorth = center + new Vector3(1, 0, 0);
