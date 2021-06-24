@@ -97,8 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 6592323f6a29c574d96254ba05ccacd9, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 6f06adec2222483438f55e1e7cb56817, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6974463c9fae5304bb7d1dace7e393b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WorldSize: 100
+  WorldSize: 200
   WorldHeight: 5
   BedrockVoxel: {fileID: 5066428156904071892, guid: 4f98e650e5805394ba9a4e12639e71ca, type: 3}
   GrassVoxel: {fileID: 3002627043073430981, guid: 3fe771f8427d58a4192cb79c61354ece, type: 3}
