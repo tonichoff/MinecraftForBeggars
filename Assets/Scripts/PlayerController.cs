@@ -10,15 +10,13 @@ public class PlayerController : MonoBehaviour
     private Vector3 moveDirection = Vector3.zero;
     private float yCameraRotation;
 
-    private Rigidbody body;
-    private Camera camera;
+    private Camera playerCamera;
     private VoxelType selectedVoxel;
     private UIController uiController;
 
     private void Start()
     {
-        body = GetComponent<Rigidbody>();
-        camera = Camera.main;
+        playerCamera = Camera.main;
         selectedVoxel = VoxelType.Grass;
         uiController = GameObject.Find("HUD").GetComponent<UIController>();
         uiController.ChangeVoxelIco(selectedVoxel);
@@ -51,7 +49,7 @@ public class PlayerController : MonoBehaviour
             transform.eulerAngles += new Vector3(0, x, 0);
         }
         if (y != 0) {
-            camera.transform.eulerAngles = new Vector3(yCameraRotation, transform.eulerAngles.y, 0);
+            playerCamera.transform.eulerAngles = new Vector3(yCameraRotation, transform.eulerAngles.y, 0);
         }
     }
 
