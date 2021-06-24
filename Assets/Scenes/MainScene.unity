@@ -166,8 +166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6974463c9fae5304bb7d1dace7e393b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WorldSize: 200
-  WorldHeight: 5
+  WorldSize: 50
+  WorldHeight: 10
   BedrockVoxel: {fileID: 5066428156904071892, guid: 4f98e650e5805394ba9a4e12639e71ca, type: 3}
   GrassVoxel: {fileID: 3002627043073430981, guid: 3fe771f8427d58a4192cb79c61354ece, type: 3}
   StoneVoxel: {fileID: 2241774894675697581, guid: a9c58d4b288bd704992720912b10146b, type: 3}
@@ -783,7 +783,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8171400910224589304, guid: 6d64ba042c158e14292117af0c7f0e56, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8171400910224589304, guid: 6d64ba042c158e14292117af0c7f0e56, type: 3}
       propertyPath: m_LocalPosition.z
